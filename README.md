@@ -27,6 +27,9 @@ Usage: `./merge_coins_with_value.sh <qclient_version> <coin_value>`
 
 Example: `./merge_coins_with_value.sh 2.0.1-testnet 0.002500000000`
 
+Points of attention:
+* please use at least 4 digits for `<coin_value>`
+
 ## send all coins to account
 Usage: `./send_all_coins_to_account.sh <qclient_version> <account_addr>`
 
@@ -36,3 +39,6 @@ Example: `./send_all_coins_to_account.sh.sh 2.0.1-testnet 0x16aaeb3c6366dfd7b2e9
 Usage: `./send_coins_with_value_to_account.sh <qclient_version> <account_addr> <coin_value>`
 
 Example: `./send_coins_with_value_to_account.sh.sh 2.0.1-testnet 0x16aaeb3c6366dfd7b2e989668415f7b62fa67bd43a23b1e068112c445e285200 0.002500000000`
+
+Points of attention:
+* please use at least 4 digits for `<coin_value>`
