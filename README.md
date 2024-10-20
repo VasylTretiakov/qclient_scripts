@@ -2,9 +2,9 @@
 qclient scripts to simplify coin operations
 
 ## pre-requisites
-* qclient should be in the folder with `.config` directory
-* qclient should be in the working/current directory
-* node should be running, connected to network and sync'ed
+* `qclient` binary should be in the folder with `.config` directory used by the `node`
+* `qclient` binary should be in the working/current directory
+* `node` should be running, connected to network, and sync'ed
 
 ## assumptions
 * qclient signature checks is not needed
