@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # Ensure version and coin value arguments are provided
-if [ -z "$1" ] || [ -z "$2"]; then
+if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: $0 <qclient_version> <coin_value>"
   echo "e.g.: $0 2.0.1-testnet 0.002500000000"
   exit 1
