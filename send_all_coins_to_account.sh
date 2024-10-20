@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # Ensure version and account address arguments are provided
-if [ -z "$1" ] || [ -z "$2"]; then
+if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: $0 <qclient_version> <account_addr>"
   echo "e.g.: $0 2.0.1-testnet 0x16aaeb3c6366dfd7b2e989668415f7b62fa67bd43a23b1e068112c445e285200"
   exit 1
