@@ -15,7 +15,7 @@ Usage: `./split_coin_into_parts_with_value.sh <qclient_version> <coin_addr> <par
 Example: `./split_coin_into_parts_with_value.sh 2.0.1-testnet 0x0533c4c10d2246e4a9fead69e57fef2d6a5ab8fe112ddcd7986590affed09d20 2 0.002500000000`
 
 Points of attention:
-* `<coin_addr>` value value should match the `<parts> * <part_value>`, otherwise, the command will not produce any results
+* `<coin_addr>` value should **match** the `<parts> * <part_value>`, otherwise, the command will not produce any results
 
 ## merge all coins
 Usage: `./merge_all_coins.sh <qclient_version>`
