@@ -1,4 +1,16 @@
 #!/bin/bash
+
+#
+# Chaotic Philanthropist
+# - give it all away
+# - double+ spend
+# - send to self
+# - runs forever
+#
+# I make a game of it. Each server tries to get
+# balance to zero.
+#
+
 IFS=$'\n'
 set -e
 #set -x
@@ -14,21 +26,19 @@ accounts='
 
 main()
 {
-    local bg=${1:-24}
     balance
     while true; do
-        chaos_phil $bg
+        chaos_phil
         balance
         sleep 1
     done
 }
 
 #
-# Chaotic Philanthropist
-# - give it all away
-# - double+ spend
-#
 # Runs qclient in background, trying to go faster.
+# Build coins linst once (dynamic), and try to send
+# each coin to each account. This will double spend
+# and send coins to self. Great! See what happens.
 #
 chaos_phil ()
 {
@@ -43,7 +53,6 @@ chaos_phil ()
     done
     for pick in $(seqrand ${#txs[@]})
     do
-        throttle $bg
         token_transfer $(p12 ${txs[$((pick-1))]}) &
     done
     wait || true
@@ -53,16 +62,6 @@ balance()
 {
         echo -n "$(date +%Y%m%d_%H%M%S) "
         qclient token balance
-}
-
-throttle()
-{
-    local limit=$1
-    local running=$(jobs -r | wc -l)
-    if (( limit <= running ))
-    then
-        wait -n || true
-    fi
 }
 
 token_transfer()
