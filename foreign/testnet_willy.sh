@@ -15,14 +15,14 @@ grep -q 'node-*' $t && echo Error: node running && exit 1
 }
 
 # download binaries
-curl -O https://releases.quilibrium.com/qclient-2.0.1-b3-testnet-linux-amd64
+curl -O https://releases.quilibrium.com/qclient-2.0.1-b2-testnet-linux-amd64
 curl -O https://releases.quilibrium.com/node-2.0.1-b3-testnet-linux-amd64
 chmod +x *-linux-amd64
 
 # shortcuts
 testnet-node() { ./node-2.0.1-b3-testnet-linux-amd64 --signature-check=false --network=1 $*; }
 testnet-qclient() {
-   ./qclient-2.0.1-b3-testnet-linux-amd64 --signature-check=false $* \
+   ./qclient-2.0.1-b2-testnet-linux-amd64 --signature-check=false $* \
      | fgrep -v "Signature check bypassed, be sure you know what you're doing"
 }
 
