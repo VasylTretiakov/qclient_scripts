@@ -22,7 +22,6 @@ accounts='
 0x19a925f14d102b9945c0bd20a6b5ec5b330f94f8f91085185f8eef89b550b43b
 0x040281732a81e96626e12aa522bf643a79736c544ef6843a74eb31ca687592c8
 0x04ff6eaf4061665b3c6b33de54de5c180b1578130199160ec4f7d8fd2c7a2908
-0x16aaeb3c6366dfd7b2e989668415f7b62fa67bd43a23b1e068112c445e285299
 '
 
 main()
@@ -31,7 +30,7 @@ main()
     while true; do
         chaos_phil
         balance
-        sleep 1
+        sleep 3
     done
 }
 
@@ -66,11 +65,11 @@ balance()
     qclient token balance
 }
 
-nproc=$(nproc)
-trottle()
+limit=$(($(nproc)/4 + 1))
+throttle()
 {
-    local running=$(jobs -r)
-    (( $running >= $nproc )) && wait -n
+    local running=$(jobs -r | wc -l)
+    (( $running < $limit )) || wait -n || true
 }
 
 token_transfer()
@@ -93,7 +92,7 @@ qclient ()
 
 coin_addrs ()
 {
-    for line in $(qclient token coins);
+    for line in $(qclient token coins | sort -R | tail -n 1000);
     do
         echo $(p4 $line);
     done
