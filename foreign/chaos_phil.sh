@@ -54,6 +54,7 @@ chaos_phil ()
     done
     for pick in $(seqrand ${#txs[@]})
     do
+        throttle
         token_transfer $(p12 ${txs[$((pick-1))]}) &
     done
     wait || true
@@ -61,17 +62,22 @@ chaos_phil ()
 
 balance()
 {
-        echo -n "$(date +%Y%m%d_%H%M%S) "
-        qclient token balance
+    echo -n "$(date +%Y%m%d_%H%M%S) "
+    qclient token balance
+}
+
+nproc=$(nproc)
+trottle()
+{
+    local running=$(jobs -r)
+    (( $running >= $nproc )) && wait -n
 }
 
 token_transfer()
 {
     target_acct=$1
     send_coin=$2
-    #echo qclient token transfer $target_acct $send_coin
     qclient token transfer $target_acct $send_coin
-    #sleep $((RANDOM % 5 + 3))
 }
 
 seqrand ()
@@ -87,7 +93,6 @@ qclient ()
 
 coin_addrs ()
 {
-    local coin
     for line in $(qclient token coins);
     do
         echo $(p4 $line);
