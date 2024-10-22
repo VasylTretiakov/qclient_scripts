@@ -13,16 +13,23 @@ coin_addr=$2
 parts=$3
 part_value=$4
 
+max_parts=100
+
+if [ $parts -gt $max_parts ]; then
+  echo "Sorry, can't split into more than $max_parts parts"
+  exit 2
+fi
+
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    release_os="linux"
-    if [[ $(uname -m) == "aarch64"* ]]; then
-        release_arch="arm64"
-    else
-        release_arch="amd64"
-    fi
-else
-    release_os="darwin"
+  release_os="linux"
+  if [[ $(uname -m) == "aarch64"* ]]; then
     release_arch="arm64"
+  else
+    release_arch="amd64"
+  fi
+else
+  release_os="darwin"
+  release_arch="arm64"
 fi
 
 echo "Splitting coin $coin_addr into $parts parts of value $part_value"
