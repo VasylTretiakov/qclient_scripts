@@ -13,7 +13,7 @@ IFS=$'\n'
 # Shortcut functions.
 # You can type ". testnet_willy.sh" at Bash prompt to expose these shortcuts
 #
-testnet-node() { ./node-2.0.3-testnet-linux-amd64 --signature-check=false --network=1 $*; }
+testnet-node() { ./node-2.0.3-b3-testnet-linux-amd64 --signature-check=false --network=1 $*; }
 testnet-qclient ()
 {
     ./qclient-2.0.2.4-linux-amd64 --signature-check=false $* > >(\grep -v "Signature check bypassed, be sure you know what you're doing")
@@ -34,7 +34,7 @@ set -x
 [[ $(ps fax | grep -f <(echo node)) ]] && errmsg 'Node already running.'
 
 # download binaries always, they can change
-curl -O https://releases.quilibrium.com/node-2.0.3-testnet-linux-amd64
+curl -O https://releases.quilibrium.com/node-2.0.3-b3-testnet-linux-amd64
 curl -O https://releases.quilibrium.com/qclient-2.0.2.4-linux-amd64
 chmod +x *-linux-amd64
 
