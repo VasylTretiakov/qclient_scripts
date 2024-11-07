@@ -44,7 +44,10 @@ main()
                 split_values=$to_hot_form
             else
                 # we can easily divide by 100, but dont go below 0.001
-                if big_enough_zero_point_one $coinv; then
+                if (( 1 == $(echo "scale=12; $coinv == 1.0" | bc) )); then
+                    # optimize 1.0 --> 10*0.1 --> 100*0.001
+                    split_values=$(rep 10 .1)
+                elif big_enough_zero_point_one $coinv; then
                     #echo "divide by 100 while we can"
                     split_count=100
                     hundreth=$(echo "scale=3; $coinv / 100" | bc)
@@ -65,8 +68,10 @@ main()
             echo "Splitting $coinv $coina"
             echo qclient token split $coina $split_values
 
-            qclient token split $coina $split_values
+            throttle
+            qclient token split $coina $split_values &
         done
+        wait || true
         (( 0 == splits )) && break
         echo
         echo "Waiting a bit for $splits splits to take."
@@ -82,6 +87,15 @@ qclient ()
     wait
     return $retval
 }
+
+joblimit=$(($(nproc)/4 + 1))
+echo "joblimit $joblimit"
+throttle()
+{
+    local running=$(jobs -r | wc -l)
+    (( $running < $joblimit )) || (echo .; wait -n) || true
+}
+
 
 big_enough()
 {
