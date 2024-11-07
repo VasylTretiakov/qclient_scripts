@@ -28,7 +28,7 @@ fi
 coins=$(./qclient-$qclient_version-$release_os-$release_arch --signature-check=false token coins)
 
 # For each coin address with requested value, send coin to account address
-echo "$coins" | grep $coin_value | grep -oP '(?<=Coin\s)[0-9a-fx]+' | while read -r coin_addr; do
+echo "$coins" | grep -F $coin_value | grep -oP '(?<=Coin\s)[0-9a-fx]+' | while read -r coin_addr; do
   echo "Transferring coin $coin_addr to $account_addr"
   ./qclient-$qclient_version-$release_os-$release_arch --signature-check=false token transfer "$account_addr" "$coin_addr"
 done

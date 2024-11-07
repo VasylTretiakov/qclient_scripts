@@ -29,7 +29,7 @@ echo "Searching for coins with value $coin_value"
 coins=$(./qclient-$qclient_version-$release_os-$release_arch --signature-check=false token coins)
 
 # Join coin addresses with requested value into space-separated string
-coin_addrs=$(echo "$coins" | grep $coin_value | grep -oP '(?<=Coin\s)[0-9a-fx]+' | tr '\n' ' ')
+coin_addrs=$(echo "$coins" | grep -F $coin_value | grep -oP '(?<=Coin\s)[0-9a-fx]+' | tr '\n' ' ')
 
 # Exit if no coin addresses were found
 if [ -z "$coin_addrs" ]; then
