@@ -9,36 +9,61 @@ set -e
 # So really it's 99 * 0.001 Quil coins, and another coin for remainder 
 #
 
+# Mine 0x1cd5b62ef0a5ef970ca7607c3428feccc73f80443ec896f9ad4ab02bc1121c1e
+transfer_to_accounts=(
+0x1a6c472f2404d749f0d50c8a88874fd9859f22d09afefc669a555f056dc2d70d
+0x12140a4357a4d5452bf16eec609295cac2e4b5fc5e675285cd43150a94abfa69
+)
+
 main()
 {
     local -A splitted=()
+    local qclient_cmd_count=0
+    local qclient_cmd_miss=0
     local coin coinv coina splits split_count remain split_values
     while true; do
         splits=0
-        for coin in $(qclient token coins | sort -nr); do
+
+        {
+          date
+          qclient token balance
+          ./node-2.0.3-b3-testnet-linux-amd64 --signature-check=false -node-info
+          echo "Coin count: $(qclient token coins | wc -l)"
+	  echo
+        } | tee -a millie.log
+
+        for coin in $(qclient token coins | \grep -v  '^0\.001000000000 QUIL' | sort -nr); do
             # parse coin value and address
-            coinv=$(parse ' )' 1 $coin)
             coina=$(parse ' )' 4 $coin)
-
-            # 0.001 coins are filtered out by grep for speed
-            # But ignore any other smaller coins
-            ! big_enough $coinv && echo -n '#' && continue
-
-            # Just a flag to know when we're done
-            splits=$((splits+1))
 
             # Splits take a while for me
             # Avoid duplicate splits
             # Wonder how many splits never take?
-	    [[ ${splitted[$coina]} ]] && echo -n "#" && continue
-            splitted[$coina]=x
+	    [[ ${splitted[$coina]} ]] && {
+                echo -n "#"
+                if (( ++splitted[$coina] > 7 )); then
+                    # give up waiting for this command to execute, it missed
+                    qclient_cmd_miss=$((qclient_cmd_miss+1))
+                    unset splitted[$coina]
+                else
+                    continue
+                fi
+            }
+
+            coinv=$(parse ' )' 1 $coin)
+
+            # 0.001 coins are filtered out by grep for speed
+            # But ignore any other smaller coins
+            ! big_enough $coinv && echo -n '#' && chaos_phil $coina && continue
+
+            # Just a flag to know when we're done
+            splits=$((splits+1))
+
+            splitted[$coina]=0
 
             split_values=''
 
             to_hot_form=$(denomination_breakdown $coinv)
-#echo "coinv $coinv"
-#echo "to_hot_form $to_hot_form"
-#exit 0
             if [[ $to_hot_form ]]; then
                 #echo "first split into hot form ,$to_hot_form,"
                 split_values=$to_hot_form
@@ -70,24 +95,44 @@ main()
 
             throttle
             qclient token split $coina $split_values &
+            qclient_cmd_count=$((qclient_cmd_count + 1))
         done
-        wait || true
-        (( 0 == splits )) && break
         echo
-        echo "Waiting a bit for $splits splits to take."
+        echo "Waiting a bit for $splits splits to take. cmd=$qclient_cmd_count miss=$qclient_cmd_miss"
+        wait || true
         sleep 10
+        # (( 0 == splits )) && break
+        echo
+        for coin in $(qclient token coins | \grep "^0\.001000000000 QUIL" | head -n 1000); do
+            # parse coin address
+            coina=$(parse ' )' 4 $coin)
+
+            # 0.001 coins are filtered out by grep for speed
+            # But ignore any other smaller coins
+            chaos_phil $coina
+        done
+ 
     done
     echo "All done"
 }
 
 qclient ()
 {
-    ./qclient-2.0.2.4-linux-amd64 --signature-check=false $* > >(\grep -v -E "(Signature check bypassed, be sure you know what you're doing|0\.001000000000 QUIL)")
+    ./qclient-2.0.2.4-linux-amd64 --signature-check=false $* > >(\grep -v "Signature check bypassed, be sure you know what you're doing")
     local retval=$?
     wait
     return $retval
 }
 
+chaos_phil()
+{
+  local coina=$1
+  local target=${transfer_to_accounts[$(( RANDOM % ${#transfer_to_accounts[@]} ))]}
+  throttle
+  qclient token transfer $target $coina &
+  echo qclient token transfer $target $coina
+}
+ 
 joblimit=$(($(nproc)/4 + 1))
 echo "joblimit $joblimit"
 throttle()
