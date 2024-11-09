@@ -11,6 +11,7 @@ set -e
 
 # Mine 0x1cd5b62ef0a5ef970ca7607c3428feccc73f80443ec896f9ad4ab02bc1121c1e
 transfer_to_accounts=(
+0x1e2a8152cf4d4af255ad58a07a92f74133853b880d19c3bc68ec0a01cc69213f
 0x1a6c472f2404d749f0d50c8a88874fd9859f22d09afefc669a555f056dc2d70d
 0x12140a4357a4d5452bf16eec609295cac2e4b5fc5e675285cd43150a94abfa69
 )
@@ -41,7 +42,7 @@ main()
             # Wonder how many splits never take?
 	    [[ ${splitted[$coina]} ]] && {
                 echo -n "#"
-                if (( ++splitted[$coina] > 7 )); then
+                if (( ++splitted[$coina] > 55 )); then
                     # give up waiting for this command to execute, it missed
                     qclient_cmd_miss=$((qclient_cmd_miss+1))
                     unset splitted[$coina]
@@ -100,7 +101,7 @@ main()
         echo
         echo "Waiting a bit for $splits splits to take. cmd=$qclient_cmd_count miss=$qclient_cmd_miss"
         wait || true
-        sleep 10
+        #sleep 10
         # (( 0 == splits )) && break
         echo
         for coin in $(qclient token coins | \grep "^0\.001000000000 QUIL" | head -n 1000); do
