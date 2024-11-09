@@ -1,8 +1,7 @@
-
 #!/bin/bash
 
 # Ensure version, account address and coin value arguments are provided
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then
   echo "Usage: $0 <qclient_version> <account_addr> <coin_value>"
   echo "e.g.: $0 2.0.1-testnet 0x16aaeb3c6366dfd7b2e989668415f7b62fa67bd43a23b1e068112c445e285200 0.002500000000"
   exit 1

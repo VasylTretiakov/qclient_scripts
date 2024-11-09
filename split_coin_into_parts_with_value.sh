@@ -1,8 +1,7 @@
-
 #!/bin/bash
 
 # Ensure version, coin address, part and part value arguments are provided
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
+if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]] || [[ -z "$4" ]]; then
   echo "Usage: $0 <qclient_version> <coin_addr> <parts> <part_value>"
   echo "e.g.: $0 2.0.1-testnet 0x0533c4c10d2246e4a9fead69e57fef2d6a5ab8fe112ddcd7986590affed09d20 2 0.002500000000"
   exit 1
@@ -15,7 +14,7 @@ part_value=$4
 
 max_parts=100
 
-if [ $parts -gt $max_parts ]; then
+if [[ $parts -gt $max_parts ]]; then
   echo "Sorry, can't split into more than $max_parts parts"
   exit 2
 fi
